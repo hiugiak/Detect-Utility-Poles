@@ -1,3 +1,12 @@
+# Data files and directories common in repo root
+data_dataset/
+weights/
+logs/
+*.h5
+results/
+temp/
+test/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -102,3 +111,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# VS Studio Code
+.vscode
+
+# macOS cache files
+.DS_Store

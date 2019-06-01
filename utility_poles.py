@@ -27,9 +27,6 @@ Usage: import the module (see Jupyter notebooks for examples), or run from
     python3 coco.py evaluate --dataset=/path/to/coco/ --model=last
 """
 
-from mrcnn import model as modellib, utils
-from mrcnn.config import Config
-from mrcnn.visualize import display_instances
 import os
 import sys
 import time
@@ -50,11 +47,14 @@ import urllib.request
 import shutil
 import matplotlib.pyplot as plt
 
-# Root directory of the project
-ROOT_DIR = os.path.abspath(".")
-
 # Import Mask RCNN
 sys.path.append("Mask_RCNN")  # To find local version of the library
+from mrcnn import model as modellib, utils
+from mrcnn.config import Config
+from mrcnn.visualize import display_instances
+
+# Root directory of the project
+ROOT_DIR = os.path.abspath(".")
 
 # Path to trained weights file
 COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")

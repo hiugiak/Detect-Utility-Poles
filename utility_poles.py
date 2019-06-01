@@ -235,18 +235,29 @@ def detect(model, image_path, output_dir=DEFAULT_OUTPUT_DIR):
     image = skimage.io.imread(image_path)
     # Detect objects
     results = model.detect([image], verbose=1)[0]
+    # Load val dataset to get class names
+    dataset_val = UtilityPoleDataset()
+    dataset_val.load_pole(args.dataset, "val")
+
+    # Extract instances
+    rois = results['rois']
+    scores = results['scores']
+    class_ids = results['class_ids']
+    instances = []
+    for i, roi in enumerate(rois):
+        score = scores[i].tolist()
+        class_id = class_ids[i]
+        class_name = dataset_val.class_names[class_id]
+        instance = {'roi': roi.tolist(), 'score': score, 'category': class_name}
+        instances += [instance]
 
     output_json = os.path.join(output_dir, "results.json")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     # Save result in json file
     with open(output_json, 'w') as f:
-        results_json = json.dumps(results)
+        results_json = json.dumps(instances)
         f.write(results_json)
-    
-    # Load val dataset to get class names
-    dataset_val = UtilityPoleDataset()
-    dataset_val.load_pole(args.dataset, "val")
 
     _, ax = plt.subplots(1, figsize=(16, 16))
     display_instances(image, results['boxes'], results['masks'],

@@ -67,7 +67,7 @@ DEFAULT_LOGS_DIR = os.path.join(ROOT_DIR, "logs")
 # through the command line argument --output
 DEFAULT_OUTPUT_DIR = os.path.join(ROOT_DIR, "result")
 
-DEFAULT_BACKBONE = "resnet101"
+DEFAULT_BACKBONE = "resnet50"
 
 ############################################################
 #  Configurations
@@ -421,7 +421,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--backbone', required=False,
                         default=DEFAULT_BACKBONE,
                         metavar="<backbone>",
-                        help='Type of backbone, "resnet50" or "renet101"')
+                        help="Type of backbone, 'resnet50' (default) or 'renet101'")
     args = parser.parse_args()
 
     # Validate arguments

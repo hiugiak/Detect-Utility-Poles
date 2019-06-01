@@ -67,6 +67,8 @@ DEFAULT_LOGS_DIR = os.path.join(ROOT_DIR, "logs")
 # through the command line argument --output
 DEFAULT_OUTPUT_DIR = os.path.join(ROOT_DIR, "result")
 
+DEFAULT_BACKBONE = "resnet101"
+
 ############################################################
 #  Configurations
 ############################################################
@@ -259,8 +261,9 @@ def detect(model, image_path, output_dir=DEFAULT_OUTPUT_DIR):
         results_json = json.dumps(instances)
         f.write(results_json)
 
+    plt.switch_backend('agg')
     _, ax = plt.subplots(1, figsize=(16, 16))
-    display_instances(image, results['boxes'], results['masks'],
+    display_instances(image, results['rois'], results['masks'],
                       results['class_ids'], dataset_val.class_names, ax=ax)
     # Save image with masks applied
     plt.savefig(os.path.join(output_dir, 'masks_applied.jpg'))
@@ -414,6 +417,10 @@ if __name__ == '__main__':
                         default=DEFAULT_OUTPUT_DIR,
                         metavar="path or output directory",
                         help='Directory the result of detection saved in')
+    parser.add_argument('-b', '--backbone', required=False,
+                        default=DEFAULT_BACKBONE,
+                        metavar="<backbone>",
+                        help='Type of backbone, "resnet50" or "renet101"')
     args = parser.parse_args()
 
     # Validate arguments
@@ -425,6 +432,8 @@ if __name__ == '__main__':
 
     assert re.match(r"^(([3-5]\+)|(heads)|(all))$", args.layers), \
         "Argument --layers could only be 'heads', '3+', '4+', '5+' or 'all'"
+    assert args.backbone == "resnet50" or args.backbone == "resnet101", \
+        "Argument --backbone could only be 'resnet50' or 'renet101'"
 
     print("Weights: ", args.weights)
     print("Dataset: ", args.dataset)
@@ -432,14 +441,17 @@ if __name__ == '__main__':
 
     # Configurations
     if args.command == "train":
-        config = UtilityPoleConfig()
+        class BackboneModifiedConfig(UtilityPoleConfig):
+            # Set backbone as user specified
+            BACKBONE = args.backbone
+        config = BackboneModifiedConfig()
     else:
         class InferenceConfig(UtilityPoleConfig):
             # Set batch size to 1 since we'll be running inference on
             # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
             GPU_COUNT = 1
             IMAGES_PER_GPU = 1
-            # DETECTION_MIN_CONFIDENCE = 0
+            BACKBONE = args.backbone
         config = InferenceConfig()
     config.display()
 

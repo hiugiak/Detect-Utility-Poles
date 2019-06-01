@@ -251,7 +251,7 @@ def detect(model, image_path, output_dir=DEFAULT_OUTPUT_DIR):
         score = scores[i].tolist()
         class_id = class_ids[i]
         class_name = dataset_val.class_names[class_id]
-        instance = {'roi': roi.tolist(), 'score': score, 'category': class_name}
+        instance = {'bbox': roi.tolist(), 'score': score, 'category': class_name}
         instances += [instance]
 
     output_json = os.path.join(output_dir, "results.json")

@@ -237,7 +237,7 @@ def detect(model, image_path, output_dir=DEFAULT_OUTPUT_DIR):
     results = model.detect([image], verbose=1)[0]
     # Load val dataset to get class names
     dataset_val = UtilityPoleDataset()
-    dataset_val.load_pole(args.dataset, "val")
+    dataset_val.load_pole("data_dataset", "val")
 
     # Extract instances
     rois = results['rois']
